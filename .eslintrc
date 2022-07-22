@@ -1,4 +1,12 @@
 {
+  "rules": {
+    "max-params": [
+      "error",
+      {
+        "max": 7
+      }
+    ]
+  },
   "extends": [
     "oclif",
     "oclif-typescript"
