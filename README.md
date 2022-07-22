@@ -1,7 +1,7 @@
-oclif-hello-world
+Dandelion
 =================
 
-oclif example Hello World CLI
+simple javascript compiler
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/oclif-hello-world.svg)](https://npmjs.org/package/oclif-hello-world)
@@ -20,7 +20,7 @@ $ npm install -g oclif-hello-world
 $ dandelion COMMAND
 running command...
 $ dandelion (--version)
-oclif-hello-world/0.0.0 darwin-x64 node-v16.13.1
+dandelion/0.0.0 darwin-x64 node-v16.13.1
 $ dandelion --help [COMMAND]
 USAGE
   $ dandelion COMMAND

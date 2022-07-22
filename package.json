@@ -1,13 +1,13 @@
 {
-  "name": "oclif-hello-world",
-  "description": "oclif example Hello World CLI",
+  "name": "dandelion",
+  "description": "simple javascript compiler",
   "version": "0.0.0",
-  "author": "Salesforce",
+  "author": "arhamymr",
   "bin": {
     "dandelion": "./bin/run"
   },
-  "bugs": "https://github.com/oclif/hello-world/issues",
   "dependencies": {
+    "@oclif/command": "^1.8.16",
     "@oclif/core": "^1",
     "@oclif/plugin-help": "^5",
     "@oclif/plugin-plugins": "^2.0.1",
@@ -42,10 +42,6 @@
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/oclif/hello-world",
-  "keywords": [
-    "oclif"
-  ],
   "license": "MIT",
   "main": "dist/index.js",
   "oclif": {
@@ -63,7 +59,6 @@
       }
     }
   },
-  "repository": "oclif/hello-world",
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
     "lint": "eslint . --ext .ts --config .eslintrc",
