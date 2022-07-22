@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "author": "Salesforce",
   "bin": {
-    "oex": "./bin/run"
+    "dandelion": "./bin/run"
   },
   "bugs": "https://github.com/oclif/hello-world/issues",
   "dependencies": {
@@ -49,8 +49,8 @@
   "license": "MIT",
   "main": "dist/index.js",
   "oclif": {
-    "bin": "oex",
-    "dirname": "oex",
+    "bin": "dandelion",
+    "dirname": "dandelion",
     "commands": "./dist/commands",
     "plugins": [
       "@oclif/plugin-help",
