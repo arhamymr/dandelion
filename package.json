@@ -10,7 +10,7 @@
     "@oclif/command": "^1.8.16",
     "@oclif/core": "^1",
     "@oclif/plugin-help": "^5",
-    "@oclif/plugin-plugins": "^2.0.1",
+    "@oclif/plugin-plugins": "^2.1.0",
     "acorn": "^8.8.0",
     "acorn-jsx": "^5.3.2"
   },
