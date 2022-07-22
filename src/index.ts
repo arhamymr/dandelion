@@ -18,11 +18,11 @@ class Dandelion extends Command {
     })
   }
 
-  scanFile(pattern: string): any {
+  static scanFile(pattern: string): any {
     glob(pattern, (err: any, files: any) => {
       if (err) {
         console.error(err)
-        return
+        return 1
       }
 
       console.log(files, 'files')
@@ -31,6 +31,8 @@ class Dandelion extends Command {
 
   static init(): void {
     console.log('init')
+    const pattern = 'src/**/*.js'
+    Dandelion.scanFile(pattern)
   }
 
   async run(): Promise<void> {
