@@ -3,7 +3,8 @@ import { Command } from '@oclif/command'
 import acorn from 'acorn'
 import fs from 'node:fs'
 import jsx from 'acorn-jsx'
-import glob from 'glob'
+import globby from 'globby'
+
 class Dandelion extends Command {
   static description =
     'simple javascript compiler';
@@ -18,21 +19,13 @@ class Dandelion extends Command {
     })
   }
 
-  static scanFile(pattern: string): any {
-    glob(pattern, (err: any, files: any) => {
-      if (err) {
-        console.error(err)
-        return 1
-      }
-
-      console.log(files, 'files')
-    })
+  static async scanFile(): Promise<void> {
+    const paths = await globby(['example/**/*.js', '!node_modules', '!dist'])
+    console.log(paths)
   }
 
   static init(): void {
-    console.log('init')
-    const pattern = 'src/**/*.js'
-    Dandelion.scanFile(pattern)
+    Dandelion.scanFile()
   }
 
   async run(): Promise<void> {
