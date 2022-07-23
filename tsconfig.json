@@ -1,25 +1,24 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "importHelpers": true,
+    "baseUrl": ".",
+    "lib": [
+      "es6"
+    ],
+    "target": "es6",
     "module": "commonjs",
+    "moduleResolution": "node",
     "outDir": "dist",
-    "rootDir": "src",
-    "strict": true,
-    "target": "es2019",
+    "resolveJsonModule": true,
+    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "sourceMap": true
   },
-  "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint"
-  ],
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
-  ],
-  "rules": {}
   "include": [
-    "src/**/*"
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
   ]
 }
