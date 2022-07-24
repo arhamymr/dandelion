@@ -4,6 +4,7 @@ import {
   tokenGenerator,
   isNumber,
   isString,
+  isKeyword,
 } from './token-utils';
 
 export const tokenizer = (code: string): void => {
@@ -14,59 +15,81 @@ export const tokenizer = (code: string): void => {
 
 
   while (char !== undefined) {
-
     char = code[pos];
-    // console.log(pos, "position", char)
-    // const isNumber = /[0-9]/.test(char);
-    // if (isNumber) {
-    //   let value = '';
-
-    //   while (isNumber) {
-    //     value += char;
-    //     char = code[++pos];
-    //   }
-
-    //   tokens.push(tokenGenerator("NUMBER", value));
-    //   continue
-    // }
-
-    // if (char === '"') {
-    //   let value = ''
-
-    //   while (char !== '"') {
-    //     value += char;
-    //     char = code[++pos];
-    //   }
-
-    //   tokens.push(tokenGenerator("STRING", value));
-    //   continue
-    // }
 
     if (isString(char) || isNumber(char)) {
       let value = '';
 
-      while (char !== " ") {
+      while (char !== " " && char !== "\n") {
         value += char;
         char = code[++pos];
       }
-      tokens.push(tokenGenerator("NAME", value));
+
+      if (isKeyword(value)) {
+        tokens.push(tokenGenerator("KEYWORD", value))
+      } else if (isNaN(parseInt(value))) {
+        tokens.push(tokenGenerator("IDENTIFIER", value));
+      } else {
+        tokens.push(tokenGenerator("NUMBER", value));
+      }
+
       continue
     }
 
-    // if (isOperator(char)) {
-    //   tokens.push(tokenOperator(char))
-    //   pos++
-    //   continue
-    // }
+    if (char === '=') {
+      pos++
+      tokens.push(tokenGenerator("ASSIGNMENT", char));
+      continue
+    }
 
-    if ()
+    if (char === '\n') {
+      pos++
+      tokens.push(tokenGenerator("NEW_LINE", char));
+      continue
+    }
 
-      if (char === " ") {
-        pos++
-        continue
+    if (char === '"') {
+      let value = '';
+      let completeQuote = '';
+      // console.log(pos, char, completeQuote, "inside stirng")
+      while (completeQuote !== '""') {
+        if (char === '"') {
+          completeQuote += char;
+        }
+
+        value += char;
+        char = code[++pos];
       }
-    console.log(pos, tokens)
-    throw new Error(char + 'invalid token')
+
+      tokens.push(tokenGenerator("STRING", value));
+      continue
+    }
+
+    if (char === "'") {
+      let value = '';
+      let completeQuote = '';
+      // console.log(pos, char, completeQuote, "inside stirng")
+      while (completeQuote !== "''") {
+        if (char === "'") {
+          completeQuote += char;
+        }
+
+        value += char;
+        char = code[++pos];
+      }
+
+      tokens.push(tokenGenerator("STRING", value));
+      continue
+    }
+
+
+
+    if (char === " ") {
+      pos++
+      continue
+    }
+    console.log(pos, char, tokens)
+    throw new Error(char + ' invalid token')
   }
   console.log(char, tokens)
 };
