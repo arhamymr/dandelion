@@ -1,27 +1,35 @@
 {
-  "name": "dandelion",
-  "description": "simple javascript compiler",
-  "version": "0.0.0",
-  "author": "arhamymr",
-  "bin": {
-    "dandelion": "./bin/run"
-  },
-  "engines": {
-    "node": ">=12.0.0"
-  },
-  "license": "MIT",
-  "main": "dist/index.js",
-  "scripts": {
-    "dev": "tsc ./src/index.ts"
+  "name": "dandelion-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
   },
   "devDependencies": {
-    "@types/globby": "^9.1.0",
     "@types/node": "^18.0.6",
+    "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@typescript-eslint/parser": "^5.30.7",
+    "eslint": "^8.20.0",
     "nodemon": "^2.0.19",
     "ts-node": "^10.9.1",
-    "tslib": "^2.4.0",
     "typescript": "^4.7.4"
   },
+  "scripts": {
+    "dev": "nodemon src/index.ts",
+    "build": "tsc src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arhamymr/dandelion-cli.git"
+  },
+  "author": "arhamymr",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arhamymr/dandelion-cli/issues"
+  },
+  "homepage": "https://github.com/arhamymr/dandelion-cli#readme",
   "dependencies": {
     "globby": "^13.1.2"
   }
