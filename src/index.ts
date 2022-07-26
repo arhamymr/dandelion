@@ -1,11 +1,11 @@
 
 import * as fs from 'fs'
 // import { globby } from 'globby'
-import { tokenizer } from './tokenize'
+import { Tokenizer } from './tokenize'
 
 
 const tokenize = (inputCode: string): void => {
-  tokenizer(inputCode)
+  new Tokenizer(inputCode).run()
 }
 
 const parser = (filepath: string): any => {

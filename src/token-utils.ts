@@ -4,7 +4,7 @@ export const isString = (char: string) => /[a-zA-Z]/i.test(char)
 export const isNumber = (char: string) => /[0-9]/i.test(char)
 export const checkIncludes = (data: string[], char: string) => data.includes(char);
 
-export const tokenGenerator = (label: string, value: string): ItemToken => {
+export const tokenType = (label: string, value: string): ItemToken => {
   return {
     label,
     value
@@ -60,9 +60,8 @@ const aritmeticOperator = ['+', '-', '*', '**', '/', "%", '++', '--']
 export const isAritmeticOperator = (char: string) => checkIncludes(aritmeticOperator, char)
 
 export const tokenArithemeticOperator = (char: string) => {
-  return tokenGenerator('OPERATOR', char)
+  return tokenType('OPERATOR', char)
 }
-
 
 // keyword javascript
 const keyword = [
@@ -117,5 +116,6 @@ const keyword = [
 export const isKeyword = (char: string) => checkIncludes(keyword, char)
 
 export const tokenKeyword = (char: string) => {
-  return tokenGenerator('KEYWORD', char)
+  return tokenType('KEYWORD', char)
 }
+
