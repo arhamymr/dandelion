@@ -4,6 +4,11 @@ const test3 = 12312
 const test4 = 'test'
 // comment here 
 
+test3 ? 'test' : 'test';
+
+/* this 
+multi line comment 
+*/
 const test6 = () => {
   return 'test'
 }

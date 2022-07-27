@@ -24,6 +24,10 @@ export class Tokenizer {
     return this.input[this.pos + 1]
   }
 
+  peekPrevChar() {
+    return this.input[this.pos - 1]
+  }
+
   peekNextTwoChar() {
     return this.input[this.pos + 2]
   }
@@ -58,14 +62,18 @@ export class Tokenizer {
     }
   }
 
-  reandIdentifier() {
+  multilineComment() {
+    while (this.char !== '/' && this.peekPrevChar() !== '*') {
+      this.char = this.input[++this.pos];
+    }
+  }
+
+  readIdentifier() {
     let value = ''
-    console.log(this.char, this.pos)
-    while (this.char !== ' ') {
-      console.log(this.char !== ' ', "this char")
+
+    while (this.char !== ' ' && this.char !== '\n') {
       value += this.char;
       this.char = this.input[++this.pos];
-      break;
     }
 
     if (isKeyword(value)) {
@@ -75,32 +83,34 @@ export class Tokenizer {
     } else {
       this.tokens.push(tokenType("NUMBER", value));
     }
-    return value;
+    return value
   }
 
   run() {
-
     while (this.char !== undefined) {
       this.char = this.input[this.pos];
-
-      console.log(this.pos, this.char, "this pos")
 
       if (this.char === undefined) {
         break;
       }
 
       if (this.char === ' ') {
-        console.log(this.pos, "empty position here")
         this.pos++
         continue
       }
 
       if (this.char === "/" && this.peekNextChar() === "/") {
         this.inlineComment()
+        continue
+      }
+
+      if (this.char === "/" && this.peekNextChar() === "*") {
+        this.multilineComment()
+        // continue
       }
 
       if (isString(this.char) || isNumber(this.char)) {
-        this.reandIdentifier()
+        this.readIdentifier()
         continue
       }
 
@@ -111,19 +121,33 @@ export class Tokenizer {
           continue
         }
 
-        // if (this.char[++this.pos]) {
-        //   let value = '';
-        //   while (this.char !== ' ') {
-        //     value += this.char;
-        //     this.char = this.input[++this.pos];
-        //   }
-        //   this.tokens.push(tokenType("ANOTHER", value));
-        //   continue
-        // }
-
         this.tokens.push(tokenType("ASSIGNMENT", this.char));
         this.pos++
         continue
+      }
+
+      if (this.char === '&') {
+        if (this.peekNextChar() === '&') {
+          this.tokens.push(tokenType("LOG_AND_OP", "&&"))
+          this.nextTwoChar()
+          continue
+        }
+      }
+
+      if (this.char === '|') {
+        if (this.peekNextChar() === '|') {
+          this.tokens.push(tokenType("LOG_OR_OP", "&&"))
+          this.nextTwoChar()
+          continue
+        }
+      }
+
+      if (this.char === '?') {
+        if (this.peekNextChar() === '?') {
+          this.tokens.push(tokenType("BIN_LOG_OPERATOR", "&&"))
+          this.nextTwoChar()
+          continue
+        }
       }
 
 
@@ -152,7 +176,6 @@ export class Tokenizer {
       if (this.char === ')') {
         this.pos++
         this.tokens.push(tokenType("PARENT_R", this.char));
-        console.log("this safe")
         continue
       }
 
