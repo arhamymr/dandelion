@@ -5,11 +5,12 @@ import { Tokenizer } from './tokenize'
 
 
 const tokenize = (inputCode: string): void => {
+  console.log(inputCode)
   new Tokenizer(inputCode).run()
 }
 
 const parser = (filepath: string): any => {
-  const readfile = fs.readFileSync(filepath).toString()
+  const readfile = fs.readFileSync(filepath, 'utf8').toString()
   tokenize(readfile)
 }
 

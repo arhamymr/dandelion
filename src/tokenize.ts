@@ -32,42 +32,100 @@ export class Tokenizer {
     return this.pos++
   }
 
+  nextTwoChar() {
+    return this.pos = this.pos + 2
+  }
+
+  readString(wrapper: string): void {
+    let value = '';
+    let completeQuote = '';
+
+    while (completeQuote !== wrapper) {
+      if (this.char === wrapper[0]) {
+        completeQuote += this.char;
+      } else {
+        value += this.char;
+      }
+
+      this.char = this.input[++this.pos];
+    }
+    this.tokens.push(tokenType("STRING", value));
+  }
+
+  inlineComment() {
+    while (this.char !== '\n') {
+      this.char = this.input[++this.pos];
+    }
+  }
+
+  reandIdentifier() {
+    let value = ''
+    console.log(this.char, this.pos)
+    while (this.char !== ' ') {
+      console.log(this.char !== ' ', "this char")
+      value += this.char;
+      this.char = this.input[++this.pos];
+      break;
+    }
+
+    if (isKeyword(value)) {
+      this.tokens.push(tokenType("KEYWORD", value))
+    } else if (isNaN(parseInt(value))) {
+      this.tokens.push(tokenType("IDENTIFIER", value));
+    } else {
+      this.tokens.push(tokenType("NUMBER", value));
+    }
+    return value;
+  }
+
   run() {
+
     while (this.char !== undefined) {
       this.char = this.input[this.pos];
 
+      console.log(this.pos, this.char, "this pos")
+
+      if (this.char === undefined) {
+        break;
+      }
+
+      if (this.char === ' ') {
+        console.log(this.pos, "empty position here")
+        this.pos++
+        continue
+      }
+
+      if (this.char === "/" && this.peekNextChar() === "/") {
+        this.inlineComment()
+      }
+
       if (isString(this.char) || isNumber(this.char)) {
-        let value = '';
-
-        while (this.char !== " " && this.char !== "\n") {
-          value += this.char;
-          this.char = this.input[++this.pos];
-        }
-
-        if (isKeyword(value)) {
-          this.tokens.push(tokenType("KEYWORD", value))
-        } else if (isNaN(parseInt(value))) {
-          this.tokens.push(tokenType("IDENTIFIER", value));
-        } else {
-          this.tokens.push(tokenType("NUMBER", value));
-        }
+        this.reandIdentifier()
         continue
       }
 
       if (this.char === '=') {
-        if (this.char[++this.pos]) {
-          let value = '';
-          while (this.char !== ' ') {
-            value += this.char;
-            this.char = this.input[++this.pos];
-          }
-          this.tokens.push(tokenType("ANOTHER", value));
-        } else {
-          this.tokens.push(tokenType("ASSIGNMENT", this.char));
+        if (this.peekNextChar() === '>') {
+          this.tokens.push(tokenType("ARROW", "=>"));
+          this.nextTwoChar()
+          continue
         }
 
+        // if (this.char[++this.pos]) {
+        //   let value = '';
+        //   while (this.char !== ' ') {
+        //     value += this.char;
+        //     this.char = this.input[++this.pos];
+        //   }
+        //   this.tokens.push(tokenType("ANOTHER", value));
+        //   continue
+        // }
+
+        this.tokens.push(tokenType("ASSIGNMENT", this.char));
+        this.pos++
         continue
       }
+
 
       if (this.char === '\n') {
         this.pos++
@@ -76,36 +134,12 @@ export class Tokenizer {
       }
 
       if (this.char === '"') {
-        let value = '';
-        let completeQuote = '';
-        // console.log(pos, this.char, completeQuote, "inside stirng")
-        while (completeQuote !== '""') {
-          if (this.char === '"') {
-            completeQuote += this.char;
-          }
-
-          value += this.char;
-          this.char = this.input[++this.pos];
-        }
-
-        this.tokens.push(tokenType("STRING", value));
+        this.readString('""')
         continue
       }
 
-      if (this.char === "'") {
-        let value = '';
-        let completeQuote = '';
-        // console.log(pos, this.char, completeQuote, "inside stirng")
-        while (completeQuote !== "''") {
-          if (this.char === "'") {
-            completeQuote += this.char;
-          }
-
-          value += this.char;
-          this.char = this.input[++this.pos];
-        }
-
-        this.tokens.push(tokenType("STRING", value));
+      if (this.char === '\'') {
+        this.readString('\'\'');
         continue
       }
 
@@ -118,6 +152,7 @@ export class Tokenizer {
       if (this.char === ')') {
         this.pos++
         this.tokens.push(tokenType("PARENT_R", this.char));
+        console.log("this safe")
         continue
       }
 
@@ -133,14 +168,11 @@ export class Tokenizer {
         continue
       }
 
-
-      if (this.char === " ") {
-        this.pos++
-        continue
-      }
-
-      console.log(this.pos, this.char, this.tokens)
-      throw new Error(this.char + ' invalid token')
+      // console.log(this.pos, this.char, this.tokens)
+      // throw new Error(this.char + ' invalid token')
+      console.log(this.char)
+      this.pos++
     }
+    console.log(this.tokens, "position here")
   }
 }
