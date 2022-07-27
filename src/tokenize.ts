@@ -1,10 +1,10 @@
 
-import { ItemToken } from './token-type';
 import {
   tokenType,
   isNumber,
   isString,
   isKeyword,
+  ItemToken, // interface 
 } from './token-utils';
 
 export class Tokenizer {
@@ -20,24 +20,12 @@ export class Tokenizer {
     this.pos = 0
   }
 
-  peekNextChar() {
-    return this.input[this.pos + 1]
+  peekNext(step = 1) {
+    return this.input[this.pos + step]
   }
 
-  peekPrevChar() {
-    return this.input[this.pos - 1]
-  }
-
-  peekNextTwoChar() {
-    return this.input[this.pos + 2]
-  }
-
-  nextChar() {
-    return this.pos++
-  }
-
-  nextTwoChar() {
-    return this.pos = this.pos + 2
+  peekPrev(step = 1) {
+    return this.input[this.pos - step]
   }
 
   readString(wrapper: string): void {
@@ -63,7 +51,7 @@ export class Tokenizer {
   }
 
   multilineComment() {
-    while (this.char !== '/' && this.peekPrevChar() !== '*') {
+    while (this.char !== '/' && this.peekPrev() !== '*') {
       this.char = this.input[++this.pos];
     }
   }
@@ -99,15 +87,15 @@ export class Tokenizer {
         continue
       }
 
-      if (this.char === "/" && this.peekNextChar() === "/") {
+      if (this.char === "/" && this.peekNext() === "/") {
         this.inlineComment()
         continue
       }
 
-      if (this.char === "/" && this.peekNextChar() === "*") {
-        this.multilineComment()
-        // continue
-      }
+      // if (this.char === "/" && this.peekNextChar() === "*") {
+      //   this.multilineComment()
+      //   // continue
+      // }
 
       if (isString(this.char) || isNumber(this.char)) {
         this.readIdentifier()
@@ -115,9 +103,21 @@ export class Tokenizer {
       }
 
       if (this.char === '=') {
-        if (this.peekNextChar() === '>') {
+        if (this.peekNext() === '>') {
           this.tokens.push(tokenType("ARROW", "=>"));
-          this.nextTwoChar()
+          this.pos = this.pos + 2
+          continue
+        }
+
+        if (this.peekNext() === '=' && this.peekNext() !== '=') {
+          this.tokens.push(tokenType('EQUAL', '=='))
+          this.pos = this.pos + 2
+          continue
+        }
+
+        if (this.peekNext() === '=' && this.peekNext(2) === '=') {
+          this.tokens.push(tokenType('DEEP_EQUAL', '==='))
+          this.pos = this.pos + 3
           continue
         }
 
@@ -127,25 +127,25 @@ export class Tokenizer {
       }
 
       if (this.char === '&') {
-        if (this.peekNextChar() === '&') {
+        if (this.peekNext() === '&') {
           this.tokens.push(tokenType("LOG_AND_OP", "&&"))
-          this.nextTwoChar()
+          this.pos = this.pos + 2
           continue
         }
       }
 
       if (this.char === '|') {
-        if (this.peekNextChar() === '|') {
+        if (this.peekNext() === '|') {
           this.tokens.push(tokenType("LOG_OR_OP", "&&"))
-          this.nextTwoChar()
+          this.pos = this.pos + 2
           continue
         }
       }
 
       if (this.char === '?') {
-        if (this.peekNextChar() === '?') {
+        if (this.peekNext() === '?') {
           this.tokens.push(tokenType("BIN_LOG_OPERATOR", "&&"))
-          this.nextTwoChar()
+          this.pos = this.pos + 2
           continue
         }
       }

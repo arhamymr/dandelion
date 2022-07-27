@@ -1,12 +1,16 @@
-import { ItemToken } from './token-type';
+export type ItemToken = {
+  type: string;
+  value: string | boolean;
+}
+
 
 export const isString = (char: string) => /[a-zA-Z]/i.test(char)
 export const isNumber = (char: string) => /[0-9]/i.test(char)
 export const checkIncludes = (data: string[], char: string) => data.includes(char);
 
-export const tokenType = (label: string, value: string): ItemToken => {
+export const tokenType = (type: string, value: string): ItemToken => {
   return {
-    label,
+    type,
     value
   }
 }
@@ -118,4 +122,6 @@ export const isKeyword = (char: string) => checkIncludes(keyword, char)
 export const tokenKeyword = (char: string) => {
   return tokenType('KEYWORD', char)
 }
+
+
 

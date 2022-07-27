@@ -5,10 +5,13 @@ const test4 = 'test'
 // comment here 
 
 test3 ? 'test' : 'test';
-
 /* this 
 multi line comment 
 */
+
+test2 == test23
+test2 === test23
+
 const test6 = () => {
   return 'test'
 }
