@@ -4,17 +4,20 @@ import {
   isNumber,
   isString,
   isKeyword,
-  ItemToken, // interface 
-} from './token-utils';
+  finishToken,
+  types,
+  TypeToken, // types
+  FullToken, //types
+} from "./token-utils"
 
 export class Tokenizer {
   input: string
-  tokens: ItemToken[]
+  tokens: FullToken[]
   char: string
   pos: number
 
   constructor(input: string) {
-    this.input = input;
+    this.input = input
     this.tokens = []
     this.char = ""
     this.pos = 0
@@ -29,60 +32,60 @@ export class Tokenizer {
   }
 
   readString(wrapper: string): void {
-    let value = '';
-    let completeQuote = '';
+    let value = ""
+    let completeQuote = ""
 
     while (completeQuote !== wrapper) {
       if (this.char === wrapper[0]) {
-        completeQuote += this.char;
+        completeQuote += this.char
       } else {
-        value += this.char;
+        value += this.char
       }
 
-      this.char = this.input[++this.pos];
+      this.char = this.input[++this.pos]
     }
-    this.tokens.push(tokenType("STRING", value));
+    this.tokens.push(finishToken(types.string, value))
   }
 
   inlineComment() {
-    while (this.char !== '\n') {
-      this.char = this.input[++this.pos];
+    while (this.char !== "\n") {
+      this.char = this.input[++this.pos]
     }
   }
 
   multilineComment() {
-    while (this.char !== '/' && this.peekPrev() !== '*') {
-      this.char = this.input[++this.pos];
+    while (this.char !== "/" && this.peekPrev() !== "*") {
+      this.char = this.input[++this.pos]
     }
   }
 
   readIdentifier() {
-    let value = ''
+    let value = ""
 
-    while (this.char !== ' ' && this.char !== '\n') {
-      value += this.char;
-      this.char = this.input[++this.pos];
+    while (this.char !== " " && this.char !== "\n") {
+      value += this.char
+      this.char = this.input[++this.pos]
     }
 
     if (isKeyword(value)) {
-      this.tokens.push(tokenType("KEYWORD", value))
+      this.tokens.push(finishToken(types.keyword, value))
     } else if (isNaN(parseInt(value))) {
-      this.tokens.push(tokenType("IDENTIFIER", value));
+      this.tokens.push(finishToken(types.identifier, value))
     } else {
-      this.tokens.push(tokenType("NUMBER", value));
+      this.tokens.push(finishToken(types.number, value))
     }
     return value
   }
 
   run() {
     while (this.char !== undefined) {
-      this.char = this.input[this.pos];
+      this.char = this.input[this.pos]
 
       if (this.char === undefined) {
-        break;
+        break
       }
 
-      if (this.char === ' ') {
+      if (this.char === " ") {
         this.pos++
         continue
       }
@@ -102,97 +105,97 @@ export class Tokenizer {
         continue
       }
 
-      if (this.char === '=') {
-        if (this.peekNext() === '>') {
-          this.tokens.push(tokenType("ARROW", "=>"));
+      if (this.char === "=") {
+        if (this.peekNext() === ">") {
+          this.tokens.push(finishToken(types.arrow))
           this.pos = this.pos + 2
           continue
         }
 
-        if (this.peekNext() === '=' && this.peekNext() !== '=') {
-          this.tokens.push(tokenType('EQUAL', '=='))
+        if (this.peekNext() === "=" && this.peekNext() !== "=") {
+          this.tokens.push(finishToken(types.equal))
           this.pos = this.pos + 2
           continue
         }
 
-        if (this.peekNext() === '=' && this.peekNext(2) === '=') {
-          this.tokens.push(tokenType('DEEP_EQUAL', '==='))
+        if (this.peekNext() === "=" && this.peekNext(2) === "=") {
+          this.tokens.push(finishToken(types.strichEqual))
           this.pos = this.pos + 3
           continue
         }
 
-        this.tokens.push(tokenType("ASSIGNMENT", this.char));
+        this.tokens.push(finishToken(types.assignment))
         this.pos++
         continue
       }
 
-      if (this.char === '&') {
-        if (this.peekNext() === '&') {
-          this.tokens.push(tokenType("LOG_AND_OP", "&&"))
+      if (this.char === "&") {
+        if (this.peekNext() === "&") {
+          this.tokens.push(finishToken(types.andand))
           this.pos = this.pos + 2
           continue
         }
       }
 
-      if (this.char === '|') {
-        if (this.peekNext() === '|') {
-          this.tokens.push(tokenType("LOG_OR_OP", "&&"))
+      if (this.char === "|") {
+        if (this.peekNext() === "|") {
+          this.tokens.push(finishToken(types.or))
           this.pos = this.pos + 2
           continue
         }
       }
 
-      if (this.char === '?') {
-        if (this.peekNext() === '?') {
-          this.tokens.push(tokenType("BIN_LOG_OPERATOR", "&&"))
+      if (this.char === "?") {
+        if (this.peekNext() === "?") {
+          this.tokens.push(finishToken(types.nullish))
           this.pos = this.pos + 2
           continue
         }
       }
 
 
-      if (this.char === '\n') {
+      if (this.char === "\n") {
         this.pos++
-        this.tokens.push(tokenType("NEW_LINE", this.char));
+        this.tokens.push(finishToken(types.newLine))
         continue
       }
 
-      if (this.char === '"') {
-        this.readString('""')
+      if (this.char === "\"") {
+        this.readString("\"\"")
         continue
       }
 
-      if (this.char === '\'') {
-        this.readString('\'\'');
+      if (this.char === "'") {
+        this.readString("''")
         continue
       }
 
-      if (this.char === '(') {
+      if (this.char === "(") {
         this.pos++
-        this.tokens.push(tokenType("PARENT_L", this.char));
+        this.tokens.push(finishToken(types.lParent))
         continue
       }
 
-      if (this.char === ')') {
+      if (this.char === ")") {
         this.pos++
-        this.tokens.push(tokenType("PARENT_R", this.char));
+        this.tokens.push(finishToken(types.rParent))
         continue
       }
 
-      if (this.char === '{') {
+      if (this.char === "{") {
         this.pos++
-        this.tokens.push(tokenType("BRACE_L", this.char));
+        this.tokens.push(finishToken(types.lQBracket))
         continue
       }
 
-      if (this.char === '}') {
+      if (this.char === "}") {
         this.pos++
-        this.tokens.push(tokenType("BRACE_R", this.char));
+        this.tokens.push(finishToken(types.rQBracket))
         continue
       }
 
       // console.log(this.pos, this.char, this.tokens)
-      // throw new Error(this.char + ' invalid token')
+      // throw new Error(this.char + " invalid token")
       console.log(this.char)
       this.pos++
     }
