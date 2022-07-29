@@ -1,12 +1,10 @@
 
 import {
-  tokenType,
   isNumber,
   isString,
   isKeyword,
   finishToken,
-  types,
-  TypeToken, // types
+  types, // types
   FullToken, //types
 } from "./token-utils"
 
@@ -47,15 +45,10 @@ export class Tokenizer {
     this.tokens.push(finishToken(types.string, value))
   }
 
-  inlineComment() {
-    while (this.char !== "\n") {
-      this.char = this.input[++this.pos]
-    }
-  }
-
   multilineComment() {
     while (this.char !== "/" && this.peekPrev() !== "*") {
       this.char = this.input[++this.pos]
+      if (this.char === undefined) break;
     }
   }
 
@@ -95,15 +88,40 @@ export class Tokenizer {
         continue
       }
 
-      // if (this.char === "/" && this.peekNextChar() === "*") {
-      //   this.multilineComment()
-      //   // continue
-      // }
+      if (this.char + this.peekNext() === "/*") {
+        this.pos++
+        // this.multilineComment()
+        while (this.char + this.peekPrev() !== "*/") {
+          const pos = ++this.pos
+          this.char = this.input[pos]
+          if (this.char === undefined) break;
+        }
+        continue
+      }
 
       if (isString(this.char) || isNumber(this.char)) {
         this.readIdentifier()
         continue
       }
+
+      if (this.char === "!") {
+        if (this.peekNext() === "=" && this.peekNext(2) !== "=") {
+          this.tokens.push(finishToken(types.inEqual))
+          this.pos = this.pos + 2
+          continue
+        }
+
+        if (this.peekNext() === "=" && this.peekNext(2) === "=") {
+          this.tokens.push(finishToken(types.strichInEqual))
+          this.pos = this.pos + 3
+          continue
+        }
+
+        this.tokens.push(finishToken(types.exclamationMark))
+        this.pos++
+        continue
+      }
+
 
       if (this.char === "=") {
         if (this.peekNext() === ">") {
@@ -112,7 +130,7 @@ export class Tokenizer {
           continue
         }
 
-        if (this.peekNext() === "=" && this.peekNext() !== "=") {
+        if (this.peekNext() === "=" && this.peekNext(2) !== "=") {
           this.tokens.push(finishToken(types.equal))
           this.pos = this.pos + 2
           continue
@@ -194,10 +212,25 @@ export class Tokenizer {
         continue
       }
 
-      // console.log(this.pos, this.char, this.tokens)
-      // throw new Error(this.char + " invalid token")
-      console.log(this.char)
-      this.pos++
+      if (this.char === "?") {
+        this.pos++
+        this.tokens.push(finishToken(types.questionMark))
+        continue
+      }
+
+      if (this.char === ":") {
+        this.pos++
+        this.tokens.push(finishToken(types.colon))
+        continue
+      }
+
+      if (this.char === ";") {
+        this.pos++
+        this.tokens.push(finishToken(types.semiColon))
+        continue
+      }
+
+      throw new Error(this.char + " invalid token")
     }
     console.log(this.tokens, "position here")
   }

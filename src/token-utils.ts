@@ -138,7 +138,7 @@ export const types = {
   rSBracket: tokenType("]"),
 
   colon: tokenType(":"),
-  semiColor: tokenType(";"),
+  semiColon: tokenType(";"),
   comma: tokenType(","),
   dot: tokenType("."),
 
@@ -151,7 +151,7 @@ export const types = {
   // < Less than
   // <= Less than equal
   equal: tokenType("==",),
-  unEqual: tokenType("!=="),
+  inEqual: tokenType("!="),
   strichEqual: tokenType("==="),
   strichInEqual: tokenType("!=="),
   greaterThan: tokenType(">",),
