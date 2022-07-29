@@ -1,4 +1,4 @@
 # dandelion-parser
-simple javascript parser
+experimental javascript parser
 
 under development !
