@@ -150,6 +150,7 @@ export const types = {
   // >= Greater than equal
   // < Less than
   // <= Less than equal
+
   equal: tokenType("==",),
   inEqual: tokenType("!="),
   strichEqual: tokenType("==="),

@@ -45,6 +45,13 @@ export class Tokenizer {
     this.tokens.push(finishToken(types.string, value))
   }
 
+  inlineComment() {
+    while (this.char !== "\n") {
+      this.char = this.input[++this.pos]
+      if (this.char === undefined) break;
+    }
+  }
+
   multilineComment() {
     while (this.char !== "/" && this.peekPrev() !== "*") {
       this.char = this.input[++this.pos]
@@ -232,6 +239,6 @@ export class Tokenizer {
 
       throw new Error(this.char + " invalid token")
     }
-    console.log(this.tokens, "position here")
+    return this.tokens
   }
 }

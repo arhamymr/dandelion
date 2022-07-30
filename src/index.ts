@@ -1,28 +1,29 @@
 
-import * as fs from 'fs'
-// import { globby } from 'globby'
-import { Tokenizer } from './tokenize'
-
+import * as fs from "fs"
+// import { globby } from "globby"
+import { Tokenizer } from "./tokenize"
+import { Parser } from "./parser";
 
 const tokenize = (inputCode: string): void => {
-  console.log(inputCode)
-  new Tokenizer(inputCode).run()
+  const tokens = new Tokenizer(inputCode).run()
+  const { parse } = new Parser()
+  console.log(parse(tokens))
 }
 
 const parser = (filepath: string): any => {
-  const readfile = fs.readFileSync(filepath, 'utf8').toString()
+  const readfile = fs.readFileSync(filepath, "utf8").toString()
   tokenize(readfile)
 }
 
 // scan directory
 const scanFile = async (): Promise<void> => {
-  // const paths = await globby(['example/**/*.js', '!node_modules', '!dist'])
+  // const paths = await globby(["example/**/*.js", "!node_modules", "!dist"])
 
   // for (let i = 0; i < paths.length; i++) {
   //   console.log(paths[i])
 
   // }
-  const paths = 'example/test.js'
+  const paths = "example/test.js"
   const ast = parser(paths)
 
 }
