@@ -1,6 +1,6 @@
 
 import {
-  FullToken, //types
+  IFullToken, //types
 } from "./token-utils"
 
 
@@ -11,20 +11,25 @@ interface IAst {
 
 export class Parser {
   ast: IAst;
-
+  posToken: number;
+  currToken: IFullToken | undefined
   constructor() {
+    this.posToken = 0
+    this.currToken = undefined
     this.ast = {
       type: "Program",
       body: []
     }
   }
 
-  parse = (tokens: FullToken[]) => {
-    // tokens.forEach(token => {
-    //   if (tokens.type)
-    // })
+  parse = (tokens: IFullToken[]) => {
+    this.currToken = tokens[this.posToken]
 
-    console.log(this, tokens, "inside parse")
+    while (this.posToken !== tokens.length) {
+      this.currToken = tokens[this.posToken]
+      this.ast.body.push(this.currToken)
+      this.posToken++
+    }
     return this.ast;
   }
 }

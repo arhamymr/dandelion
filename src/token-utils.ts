@@ -1,26 +1,34 @@
-export type TypeToken = {
+export interface ITypeToken {
   label: string;
 }
 
-export type FullToken = {
-  type: TypeToken,
+export interface IFullToken {
+  type: ITypeToken,
   value: string | number
+  loc: ILocation
+}
+
+export interface ILocation {
+  line: number
+  start: number
+  end: number
 }
 
 export const isString = (char: string) => /[a-zA-Z]/i.test(char)
 export const isNumber = (char: string) => /[0-9]/i.test(char)
 export const checkIncludes = (data: string[], char: string) => data.includes(char);
 
-export const tokenType = (label: string): TypeToken => {
+export const tokenType = (label: string): ITypeToken => {
   return {
     label,
   }
 }
 
-export const finishToken = (type: TypeToken, value?: string): FullToken => {
+export const finishToken = (loc: ILocation, type: ITypeToken, value?: string,): IFullToken => {
   return {
     type,
-    value: value || type.label
+    value: value || type.label,
+    loc,
   }
 }
 

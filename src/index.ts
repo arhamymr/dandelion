@@ -7,7 +7,8 @@ import { Parser } from "./parser";
 const tokenize = (inputCode: string): void => {
   const tokens = new Tokenizer(inputCode).run()
   const { parse } = new Parser()
-  console.log(parse(tokens))
+  console.log(tokens, "tokens")
+  // console.log(parse(tokens))
 }
 
 const parser = (filepath: string): any => {
