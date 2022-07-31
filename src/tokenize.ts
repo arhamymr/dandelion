@@ -271,7 +271,7 @@ export class Tokenizer {
         continue
       }
 
-      throw new Error(this.char + ` invalid token on line: ${this.loc.line}`)
+      throw new Error(`invalid token ${this.char} on line: ${this.loc.line}`)
     }
     return this.tokens
   }
