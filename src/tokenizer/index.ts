@@ -8,6 +8,12 @@ import {
 
 import * as charCodes from "charcodes";
 
+enum Errors {
+  UnterminatedComment = "Unterminated comment",
+  UnexpectedToken = "Unexpected token",
+  UnterminatedString = "Unterminated String"
+}
+
 export class Tokenizer {
   input: string
   tokens: IFullToken[]
@@ -43,17 +49,10 @@ export class Tokenizer {
     return this.input.charCodeAt(this.pos - step)
   }
 
-  readString() {
-    let str = ""
-    let cc = this.input.charCodeAt(this.pos)
-    // while (cc !== 34 && cc !== 39 && !this.isEndOfFile()) {
-    //   str += this.input[this.pos]
-    //   cc = this.input.charCodeAt(++this.pos)
-    // }
 
-    this.tokens.push(finishToken(this.getLocation(), types.string, str))
+  raise(message: string, params: any) {
+    throw new Error(message + "at line: " + params.at.line)
   }
-
 
   readNumber() {
     let numb = ""
@@ -65,36 +64,62 @@ export class Tokenizer {
   }
 
   skipInlineComment() {
-    const cc = this.input.charCodeAt(this.pos)
-    while (cc !== 10 && cc !== 13) {
+    while (this.input.charCodeAt(this.pos) !== charCodes.lineFeed && !this.isEndOfFile()) {
       this.pos++
     }
   }
 
   skipMultilineComment() {
-    const cc = this.input.charCodeAt(this.pos)
-    if (cc === 47 && this.peekNext() === 42) {  // /*
-      this.pos += 2
-      while (cc !== 47 && this.peekPrev() !== 42) { // * and /
-        this.pos++
-      }
+    const start = this.pos;
+    const end = this.input.indexOf("*/", start + 2);
+    if (end === -1) {
+      throw this.raise(Errors.UnterminatedComment, {
+        at: this.loc
+      });
     }
+
+    const comment = this.input.slice(start + 2, end);
+    this.loc.line += comment.split("\n").length - 1
+
+    this.pos = end + 2;
   }
 
-  readWord() {
-    let value = ""
-
-    value += this.char
-    this.char = this.input[++this.pos]
-    const loc = {
-      line: this.loc.line,
-      start: this.pos - value.length,
-      end: this.pos - 1
+  readString() {
+    const start = this.pos + 1
+    const end = this.input.indexOf("\"", start)
+    if (end === -1) {
+      throw this.raise(Errors.UnterminatedString, {
+        at: this.loc
+      })
     }
 
-    this.tokens.push(finishToken(loc, types.identifier, value))
+    const str = this.input.slice(start, end)
+    this.pos = end + 1
 
-    return value
+    const loc = {
+      line: this.loc.line,
+      start,
+      end,
+    }
+
+    this.tokens.push(finishToken(loc, types.string, str))
+  }
+
+
+  readWord() {
+    const start = this.pos
+    const end = this.input.indexOf(" ", start)
+
+    const str = this.input.slice(start, end)
+
+    const loc = {
+      line: this.loc.line,
+      start,
+      end,
+    }
+
+    this.pos = end
+    this.tokens.push(finishToken(loc, types.identifier, str))
   }
 
 
@@ -113,9 +138,64 @@ export class Tokenizer {
           this.pos++
           break
         case charCodes.lineFeed: //  new line \n
+          // if (this.tokens[this.tokens.length - 1].type.label !== "\n") {
           this.tokens.push(finishToken(this.getLocation(), types.newLine))
+
           this.loc.line++
           this.pos++
+          break
+        // lower case 
+        case charCodes.uppercaseA: // a
+        case charCodes.uppercaseB: // b
+        case charCodes.uppercaseC: // c
+        case charCodes.uppercaseE: // e
+        case charCodes.uppercaseF: // f
+        case charCodes.uppercaseG: // g
+        case charCodes.uppercaseH: // h
+        case charCodes.uppercaseI: // i
+        case charCodes.uppercaseJ: // j
+        case charCodes.uppercaseK: // k
+        case charCodes.uppercaseL: // l
+        case charCodes.uppercaseM: // m
+        case charCodes.uppercaseN: // n
+        case charCodes.uppercaseO: // o
+        case charCodes.uppercaseP: // p
+        case charCodes.uppercaseQ: // q
+        case charCodes.uppercaseR: // r
+        case charCodes.uppercaseS: // s
+        case charCodes.uppercaseT: // t
+        case charCodes.uppercaseU: // u
+        case charCodes.uppercaseV: // v
+        case charCodes.uppercaseW: // w
+        case charCodes.uppercaseX: // x
+        case charCodes.uppercaseY: // y
+        case charCodes.uppercaseZ: // z
+        case charCodes.lowercaseA: // a // uppercase
+        case charCodes.lowercaseB: // b
+        case charCodes.lowercaseC: // c
+        case charCodes.lowercaseE: // e
+        case charCodes.lowercaseF: // f
+        case charCodes.lowercaseG: // g
+        case charCodes.lowercaseH: // h
+        case charCodes.lowercaseI: // i
+        case charCodes.lowercaseJ: // j
+        case charCodes.lowercaseK: // k
+        case charCodes.lowercaseL: // l
+        case charCodes.lowercaseM: // m
+        case charCodes.lowercaseN: // n
+        case charCodes.lowercaseO: // o
+        case charCodes.lowercaseP: // p
+        case charCodes.lowercaseQ: // q
+        case charCodes.lowercaseR: // r
+        case charCodes.lowercaseS: // s
+        case charCodes.lowercaseT: // t
+        case charCodes.lowercaseU: // u
+        case charCodes.lowercaseV: // v
+        case charCodes.lowercaseW: // w
+        case charCodes.lowercaseX: // x
+        case charCodes.lowercaseY: // y
+        case charCodes.lowercaseZ: // z
+          this.readWord()
           break
         case charCodes.digit0:
         case charCodes.digit1:
@@ -166,14 +246,14 @@ export class Tokenizer {
           this.pos++
           break
         case charCodes.equalsTo: // =
-          if (this.peekNext() === 61) {
+          if (this.peekNext() === charCodes.equalsTo && this.peekNext(2) !== charCodes.equalsTo) {
             this.tokens.push(finishToken(this.getLocation(), types.equal))
-            this.pos++
+            this.pos += 2
             break
           }
-          if (this.peekNext() === 61 && this.peekNext(2) === 61) {
+          if (this.peekNext() === charCodes.equalsTo && this.peekNext(2) === charCodes.equalsTo) {
             this.tokens.push(finishToken(this.getLocation(), types.strichEqual))
-            this.pos++
+            this.pos += 3
             break
           }
           this.tokens.push(finishToken(this.getLocation(), types.assignment))
@@ -239,7 +319,9 @@ export class Tokenizer {
           this.readString()
           break
         default:
-          throw new Error(String.fromCharCode(cc) + " undefined token")
+          throw this.raise(Errors.UnexpectedToken, {
+            at: this.loc
+          });
       }
     }
 

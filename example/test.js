@@ -1,26 +1,18 @@
-1 * 1
-// const test23 = "2123n"
-// const test3 = 12312
-// const test4 = "test"
+// 1 * 1
 
-// test3 ? "test" : "test";
+/*
+multiple comment again
+test 
+lagi
+*/
+"string test here "
+123 == 1231
+"string here" == "string here"
 
-// test2 == test23
-// test2 === test23
-// test2 != test23
-// test2 !== test23
+function test() {
+  return "test"
+}
 
-// // comment here
-// // test dah
-
-// test2 && test2
-// test2 || test2
-
-// const test6 = () => {
-//   return "test"
-// }
-
-
-/* multile comment 
-tset 
+/* multiple comment
+example
 */
