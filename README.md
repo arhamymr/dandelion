@@ -1,4 +1,4 @@
 # dandelion-parser
-experimental javascript parser
+experimental programming language parser
 
 under development !
