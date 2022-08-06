@@ -14,10 +14,6 @@ export interface ILocation {
   end: number
 }
 
-export const isString = (char: string) => /[a-zA-Z]/i.test(char)
-export const isNumber = (char: string) => /[0-9]/i.test(char)
-export const checkIncludes = (data: string[], char: string) => data.includes(char);
-
 export const tokenType = (label: string): ITypeToken => {
   return {
     label,
@@ -32,46 +28,8 @@ export const finishToken = (loc: ILocation, type: ITypeToken, value?: string,): 
   }
 }
 
-// Binary Logical Operators
-
-// && Logical AND.
-
-// || Logical OR.
-
-// ?? Nullish Coalescing Operator.
-
-const binaryLogicalOperator = ["&&", "||", "??"];
-export const isBinaryLogicalOperator = (char: string) => checkIncludes(binaryLogicalOperator, char)
-
-// Equality operators 
-
-// == Equality operator.
-// != Inequality operator.
-// === Strict equality operator.
-// !== Strict inequality operator.
-
-const equalityOperator = ["==", "!=", "===", "!=="]
-export const isEqualityOperator = (char: string) => checkIncludes(equalityOperator, char)
-
-
-// aritmetic operators
-
-// +	Addition
-// -	Subtraction
-// *	Multiplication
-// **	Exponentiation (ES2016)
-// /	Division
-// %	Modulus (Division Remainder)
-// ++	Increment
-// --	Decrement
-
-
-const aritmeticOperator = ["+", "-", "*", "**", "/", "%", "++", "--"]
-export const isAritmeticOperator = (char: string) => checkIncludes(aritmeticOperator, char)
-
-
 // keyword javascript
-const keyword = [
+export const keyword = [
   "await",
   "break",
   "case",
@@ -120,8 +78,6 @@ const keyword = [
   "yield"
 ];
 
-export const isKeyword = (char: string) => checkIncludes(keyword, char)
-
 
 export const types = {
   string: tokenType("string"),
@@ -133,8 +89,8 @@ export const types = {
   // !"#$%&"()*+,-./:;< => ?@[\]^_`{|}~
   assignment: tokenType("="),
   arrow: tokenType("=>"),
-  exclamationMark: tokenType("!"),
-  questionMark: tokenType("?"),
+  not: tokenType("!"),
+  question: tokenType("?"),
   numberSign: tokenType("#"),
   ampersand: tokenType("&"),
 
@@ -178,6 +134,7 @@ export const types = {
   // %	Modulus (Division Remainder)
   // ++	Increment
   // --	Decrement
+
   addition: tokenType("+"),
   subtraction: tokenType("-"),
   multiplication: tokenType("*"),

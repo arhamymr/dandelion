@@ -1,13 +1,13 @@
 
 import * as fs from "fs"
 // import { globby } from "globby"
-import { Tokenizer } from "./tokenize"
-import { Parser } from "./parser";
+import { Tokenizer } from "./tokenizer"
+// import { Parser } from "./parser";
 
 const tokenize = (inputCode: string): void => {
-  const tokens = new Tokenizer(inputCode).run()
-  const { parse } = new Parser()
-  console.log(tokens, "tokens")
+  const tokens = new Tokenizer(inputCode)
+  // const { parse } = new Parser()
+  console.log(tokens.run(), "tokens")
   // console.log(parse(tokens))
 }
 

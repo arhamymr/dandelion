@@ -1,7 +1,7 @@
 
 import {
   IFullToken, //types
-} from "./token-utils"
+} from "../tokenizer/types"
 
 
 interface IAst {
