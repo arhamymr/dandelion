@@ -96,8 +96,8 @@ export const types = {
 
   lParent: tokenType("("),
   rParent: tokenType(")"),
-  lQBracket: tokenType("{"),
-  rQBracket: tokenType("}"),
+  lCBracket: tokenType("{"),
+  rCBracket: tokenType("}"),
   lSBracket: tokenType("["),
   rSBracket: tokenType("]"),
 

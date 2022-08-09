@@ -5,7 +5,6 @@ import {
   IFullToken, //types
   ILocation
 } from "./types"
-
 import * as charCodes from "charcodes";
 
 enum Errors {
@@ -227,11 +226,11 @@ export class Tokenizer {
           this.pos++
           break
         case charCodes.leftCurlyBrace: // {
-          // not implement  
+          this.tokens.push(finishToken(this.getLocation(), types.lCBracket))
           this.pos++
           break
         case charCodes.rightCurlyBrace: // }
-          // not implement 
+          this.tokens.push(finishToken(this.getLocation(), types.rCBracket))
           this.pos++
           break
         case charCodes.comma: // ,
@@ -324,7 +323,6 @@ export class Tokenizer {
           });
       }
     }
-
     return this.tokens
   }
 }
