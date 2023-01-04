@@ -1,4 +1,5 @@
 # dandelion-parser
-experimental programming language parser
 
-under development !
+programming language parser
+
+under development!
