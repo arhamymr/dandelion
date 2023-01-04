@@ -1,6 +1,6 @@
 # dandelion-parser
 
-programming language parser
+javascript parser
 
 under development!
 
