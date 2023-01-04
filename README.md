@@ -1,7 +1,5 @@
-# dandelion-parser
+# dandelion
 
 javascript parser
-
-under development!
 
 comeback later :)
